@@ -8,10 +8,10 @@ describe Cell do
             expect(cell.coordinate).to eql([1, 3])
         end
 
-        it "initializes value to nil" do
+        it "initializes value to empty string" do
             coordinate = [0,0]
             cell = Cell.new(coordinate)
-            expect(cell.value).to eql(nil)
+            expect(cell.value).to eql(" ")
         end
 
         it "initializes neighbours to empty array" do
@@ -38,6 +38,15 @@ describe Cell do
             cell = Cell.new(coordinate)
             cell.set_value("test value")
             expect(cell.value).to eql("test value")
+        end
+    end
+
+    describe "#set_index" do
+        it "sets the index of a cell" do
+            coordinate = [0,5]
+            cell= Cell.new(coordinate)
+            cell.set_index(5)
+            expect(cell.index).to eql(5)
         end
     end
 end
