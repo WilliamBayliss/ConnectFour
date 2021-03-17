@@ -42,7 +42,6 @@ class Game
         puts "#{player.name}, it is your turn!"
         column = get_column()
         selected_cell = @board.token_drop(column, player.token)
-        p player.token
         if @board.win_condition?(selected_cell)
             victory!(player)
         else
