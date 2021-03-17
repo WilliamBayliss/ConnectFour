@@ -41,12 +41,4 @@ describe Cell do
         end
     end
 
-    describe "#set_index" do
-        it "sets the index of a cell" do
-            coordinate = [0,5]
-            cell= Cell.new(coordinate)
-            cell.set_index(5)
-            expect(cell.index).to eql(5)
-        end
-    end
 end

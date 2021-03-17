@@ -48,17 +48,6 @@ describe Board do
         end
     end
 
-    describe "#add_indices" do 
-        it "adds the correct index to each cell" do
-            board = Board.new
-            array = board.make_board_array()
-            board.fill_board_array(array)
-            board.create_graph(array)
-            board.add_indices()
-            expect(board[[5,6]].index).to eql(41)
-        end
-    end
-
     describe "#create_graph" do
         it "adds all cells to the @board" do
             board = Board.new
@@ -69,6 +58,7 @@ describe Board do
             expect(board[coordinate]).to_not eql(nil)
         end
     end
+
 
     describe "#adjacent?" do
         it "returns false if cell is self" do
@@ -204,6 +194,374 @@ describe Board do
             expect(neighbours).to eql(neighbours_list)
         end
         
+    end
+
+    describe "#get_neighbour_direction" do
+        it "returns '-' if cell is to the right" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            coordinate_one = [0,0]
+            coordinate_two = [0,1]
+            cell_one = board[coordinate_one]
+            cell_two = board[coordinate_two]
+            direction = board.get_neighbour_direction(cell_one, cell_two)
+            expect(direction).to eql('-')
+        end
+
+        it "returns '-' if cell is to the left" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            coordinate_one = [0,1]
+            coordinate_two = [0,0]
+            cell_one = board[coordinate_one]
+            cell_two = board[coordinate_two]
+            direction = board.get_neighbour_direction(cell_one, cell_two)
+            expect(direction).to eql('-')
+        end
+
+        it "returns '|' if cell is above" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            coordinate_one = [1,2]
+            coordinate_two = [0,2]
+            cell_one = board[coordinate_one]
+            cell_two = board[coordinate_two]
+            direction = board.get_neighbour_direction(cell_one, cell_two)
+            expect(direction).to eql('|')
+        end
+
+        it "returns '|' if cell is below" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            coordinate_one = [1,2]
+            coordinate_two = [2,2]
+            cell_one = board[coordinate_one]
+            cell_two = board[coordinate_two]
+            direction = board.get_neighbour_direction(cell_one, cell_two)
+            expect(direction).to eql('|')
+        end
+
+        it "returns '/' if cell is above right" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            coordinate_one = [1,2]
+            coordinate_two = [0,3]
+            cell_one = board[coordinate_one]
+            cell_two = board[coordinate_two]
+            direction = board.get_neighbour_direction(cell_one, cell_two)
+            expect(direction).to eql('/')
+        end
+
+        it "returns '/' if cell is below left" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            coordinate_one = [1,2]
+            coordinate_two = [2,1]
+            cell_one = board[coordinate_one]
+            cell_two = board[coordinate_two]
+            direction = board.get_neighbour_direction(cell_one, cell_two)
+            expect(direction).to eql('/')
+        end
+
+        it "returns '\\' if cell is below right" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            coordinate_one = [1,2]
+            coordinate_two = [2,3]
+            cell_one = board[coordinate_one]
+            cell_two = board[coordinate_two]
+            direction = board.get_neighbour_direction(cell_one, cell_two)
+            expect(direction).to eql('\\')
+        end
+        it "returns '\\' if cell is above left" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            coordinate_one = [1,2]
+            coordinate_two = [0,1]
+            cell_one = board[coordinate_one]
+            cell_two = board[coordinate_two]
+            direction = board.get_neighbour_direction(cell_one, cell_two)
+            expect(direction).to eql('\\')
+        end
+    end
+
+    describe "#directional_scan" do
+        it "returns an array of horizontal cells with same value" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            
+            board[[1,0]].set_value("1")
+            cell = board[[1,0]]
+            board[[1,1]].set_value("1")
+            board[[1,2]].set_value("1")
+            board[[1,3]].set_value("1")
+            direction = '-'
+            in_a_row = board.directional_scan(direction, cell)
+            expect(in_a_row[-1]).to eql(board[[1,3]])
+        end
+
+        it "returns array of vertical cells with same value" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+            board[[1,0]].set_value(1)
+            cell = board[[1,0]]
+            board[[2,0]].set_value(1)
+            board[[3,0]].set_value(1)
+            board[[4,0]].set_value(1)
+            direction = '|'
+            in_a_row = board.directional_scan(direction, cell)
+            expect(in_a_row[-1]).to eql(board[[4,0]])
+        end
+
+        it "returns an array of \\ cells with the same value" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+            board[[1,0]].set_value(1)
+            cell = board[[1,0]]
+            board[[2,1]].set_value(1)
+            board[[3,2]].set_value(1)
+            board[[4,3]].set_value(1)
+            direction = '\\'
+            in_a_row = board.directional_scan(direction, cell)
+            expect(in_a_row[-1]).to eql(board[[4,3]])
+        end
+
+        it "returns an array of / cells with the same value" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+            board[[5,0]].set_value(1)
+            cell = board[[5,0]]
+            board[[4,1]].set_value(1)
+            board[[3,2]].set_value(1)
+            board[[2,3]].set_value(1)
+            direction = '/'
+            in_a_row = board.directional_scan(direction, cell)
+            expect(in_a_row[-1]).to eql(board[[2,3]])
+        end
+
+        it "returns an array of fewer than four same value cells if no other same value cells in that direction" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+            board[[1,0]].set_value(1)
+            cell = board[[1,0]]
+            board[[1,1]].set_value(1)
+            board[[1,2]].set_value(1)
+            direction = '-'
+            in_a_row = board.directional_scan(direction, cell)
+            expect(in_a_row.length).to eql(3)
+        end
+
+        it "returns only the cells in a given direction with the same value" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+
+            cell = board[[1,0]]
+            board[[1,0]].set_value(1)
+            board[[1,1]].set_value(1)
+            board[[0,0]].set_value(1)
+            board[[0,1]].set_value(1)
+            board[[1,1]].set_value(1)
+            board[[1,2]].set_value(1)
+            board[[1,3]].set_value(1)
+            board[[2,2]].set_value(1)
+            board[[2,3]].set_value(1)
+            in_a_row = board.directional_scan('-', cell)
+            expect(in_a_row[-1]).to eql(board[[1,3]])
+            expect(in_a_row.length).to eql(4)
+        end
+
+        it "does not skip over cells that do not match source value" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+
+            cell = board[[1,0]]
+            board[[1,0]].set_value(1)
+            board[[1,1]].set_value(1)
+            board[[1,3]].set_value(0)
+            board[[1,4]].set_value(1)
+            in_a_row = board.directional_scan('-', cell)
+            expect(in_a_row.length).to eql(2)
+        end
+    end
+
+    describe "#win_condition?" do
+        it "returns false if there is no win condition in a row from a given cell" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+
+            cell = board[[1,0]]
+            board[[1,0]].set_value(1)
+            board[[1,1]].set_value(0)
+            board[[0,0]].set_value(1)
+            board[[0,1]].set_value(0)
+            board[[1,1]].set_value(2)
+            board[[1,2]].set_value(3)
+            board[[1,3]].set_value(4)
+            board[[2,2]].set_value(5)
+            board[[2,3]].set_value(1)
+            expect(board.win_condition?(cell)).to eql(false)
+        
+        end
+
+        it "returns true if there is a win condition in a row from a given cell" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+
+            cell = board[[1,0]]
+            board[[1,0]].set_value(1)
+            board[[1,1]].set_value(7)
+            board[[0,0]].set_value(2)
+            board[[0,1]].set_value(3)
+            board[[1,1]].set_value(1)
+            board[[1,2]].set_value(1)
+            board[[1,3]].set_value(1)
+            board[[2,2]].set_value(5)
+            board[[2,3]].set_value(1)
+            expect(board.win_condition?(cell)).to eql(true)
+        end
+    end
+
+    describe "#get_column" do
+        it "returns array of cells in a given column of correct length" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+            column = 3
+            cells = board.get_column(3)
+            expect(cells.length).to eql(6)
+        end
+
+        it "returns cells in reverse order, lowest cell on the board first" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+            column = 3
+            cells = board.get_column(3)
+            expect(cells[0]).to eql(board[[5,3]])
+        end
+
+    end
+
+    describe "#token_drop" do
+        it "inserts a player's token into the lowest available cell in a given column" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+            token = "1"
+            column = 3
+            board.token_drop(column, token)
+            expect(board[[5,3]].value).to eql(token)
+        end
+
+        it "only modifies the lowest empty cell in a column" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+            token = "1"
+            column = 3
+            board[[5,3]].set_value("2")
+            board[[4,3]].set_value("2")
+            board[[3,3]].set_value("2")
+            board.token_drop(column, token)
+            expect(board[[5,3]].value).to_not eql(token)
+        end
+
+        it "doesn't modify cells higher than the lowest available cell" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+            token = "1"
+            column = 3
+            board.token_drop(column, token)
+            expect(board[[4,3]]).to_not eql(token)
+        end
+
+        it "returns the modified cell" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+
+            token = "1"
+            column = 3
+            cell = board.token_drop(column, token)
+            expect(cell).to_not eql(board[[4,3]])       
+        end
     end
 
     

@@ -1,5 +1,5 @@
 class  Cell
-    attr_accessor :index, :coordinate, :value, :neighbours
+    attr_accessor :coordinate, :value, :neighbours
   def initialize coordinate
     @index = 0
     @coordinate = coordinate
@@ -13,9 +13,5 @@ class  Cell
 
   def set_value value
     @value = value
-  end
-
-  def set_index index
-    @index = index
   end
 end
