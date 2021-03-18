@@ -169,6 +169,14 @@ class Board
         cell_list.reverse!
     end
 
+    def column_full? column
+        if @board[[0,column]].value != " "
+            return true
+        else
+            return false
+        end
+    end
+
     def print_board
         puts "[ #{@board[[0,0]].value} | #{@board[[0,1]].value} | #{@board[[0,2]].value} | #{@board[[0,3]].value} | #{@board[[0,4]].value} | #{@board[[0,5]].value} | #{@board[[0,6]].value} ]"
         puts "[ #{@board[[1,0]].value} | #{@board[[1,1]].value} | #{@board[[1,2]].value} | #{@board[[1,3]].value} | #{@board[[1,4]].value} | #{@board[[1,5]].value} | #{@board[[1,6]].value} ]"

@@ -564,7 +564,36 @@ describe Board do
         end
     end
 
-    
+    describe "#column_full?" do
+        it "returns false if the column is not full" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            
+            column = 3
+            expect(board.column_full?(column)).to eql(false)
+        end
+
+        it "returns true if top cell in that column has a value != initialized value" do
+            board = Board.new
+            array = board.make_board_array()
+            board.fill_board_array(array)
+            board.create_graph(array)
+            board.add_edges_to_graph()
+            column = 3
+            board[[0,3]].set_value("X")
+            board[[1,3]].set_value("X")
+            board[[2,3]].set_value("X")
+            board[[3,3]].set_value("X")
+            board[[4,3]].set_value("X")
+            board[[5,3]].set_value("X")
+
+            expect(board.column_full?(column)).to eql(true)
+        end
+
+    end
 
 end
 

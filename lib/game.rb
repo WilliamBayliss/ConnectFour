@@ -41,6 +41,10 @@ class Game
         @board.print_board()
         puts "#{player.name}, it is your turn!"
         column = get_column()
+        until !(@board.column_full?(column))
+            puts "That column is full!"
+            column = get_column()
+        end
         selected_cell = @board.token_drop(column, player.token)
         if @board.win_condition?(selected_cell)
             victory!(player)
